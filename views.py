@@ -1,30 +1,35 @@
-iifrom django.shortcuts import render
+from django.shortcuts import render, redirect
 
-DATA = {
-    'omlet': {
-        'яйца, шт': 2,
-        'молоко, л': 0.1,
-        'соль, ч.л.': 0.5,
-    },
-    'pasta': {
-        'макароны, г': 0.3,
-        'сыр, г': 0.05,
-    },
-    'buter': {
-        'хлеб, ломтик': 1,
-        'колбаса, ломтик': 1,
-        'сыр, ломтик': 1,
-        'помидор, ломтик': 1,
-    },
-    # можете добавить свои рецепты ;)
-}
+from phones.models import Phone
 
-# Напишите ваш обработчик. Используйте DATA как источник данных
-# Результат - render(request, 'calculator/index.html', context)
-# В качестве контекста должен быть передан словарь с рецептом:
-# context = {
-#   'recipe': {
-#     'ингредиент1': количество1,
-#     'ингредиент2': количество2,
-#   }
-# }
+def index(request):
+    # получение данных из моделей
+    all_phones = Phone.objects.all()# получить все объекты из нашей модели(все записи нашей таблицы), objects - менеджер(?)
+    print('all_phones :',all_phones)
+
+    return redirect('catalog')
+
+
+def show_catalog(request):
+    template = 'catalog.html'
+    phones_all = Phone.objects.all()
+    name = request.GET.get('name')
+    price = request.GET.get('price')
+    context = {'phones': phones_all,
+                'name': name,
+                'price': price }
+    return render(request, template, context)
+
+
+def show_product(request, slug):
+    template = 'product.html'
+    phones = Phone.objects.filter(slug = slug)# ?
+    context = {'phones': phones }
+    return render(request, template, context)
+
+
+
+
+
+
+
